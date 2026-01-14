@@ -1,0 +1,66 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run build.ts --outdir=dist --minify --sourcemap=linked
+
+      - name: Prepare dist folder
+        run: |
+          # Check build output structure and move files if needed
+          if [ -d "dist/src" ]; then
+            echo "Moving files from dist/src to dist root..."
+            mv dist/src/* dist/
+            rm -rf dist/src
+          fi
+
+          # List files to debug
+          echo "Files in dist:"
+          ls -la dist/
+
+          # Add base tag for GitHub Pages subpath
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "Repository name: $REPO_NAME"
+
+          # Insert base tag into HTML files
+          if [ -f "dist/index.html" ]; then
+            sed -i "s|<head>|<head><base href=\"/$REPO_NAME/\">|" dist/index.html
+          fi
+
+          # Add 404.html for SPA routing (if index.html exists)
+          if [ -f "dist/index.html" ]; then
+            cp dist/index.html dist/404.html
+          fi
+
+          # Add .nojekyll to bypass Jekyll processing
+          touch dist/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          cname: false

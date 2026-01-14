@@ -170,3 +170,4 @@ export function PostCard({ post, author, currentUser, onClick, showFullContent =
   );
 }
 
+

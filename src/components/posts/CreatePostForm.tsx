@@ -23,12 +23,12 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
     setIsLoading(true);
 
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const result = store.createPost(title, content);
-    
+
     setIsLoading(false);
-    
+
     if (result.success && result.post) {
       setTitle('');
       setContent('');
@@ -47,7 +47,9 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="h-5 w-5 text-orange-500" />
-            <h2 className="text-xl font-bold" data-testid="create-post-title">Create Post</h2>
+            <h2 className="text-xl font-bold" data-testid="create-post-title">
+              Create Post
+            </h2>
           </div>
           {onCancel && (
             <Button
@@ -62,11 +64,21 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4" data-testid="create-post-form">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+          data-testid="create-post-form"
+        >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="post-title">Title</Label>
-              <span className={`text-xs ${charCountTitle < 5 ? 'text-muted-foreground' : 'text-orange-500'}`}>
+              <span
+                className={`text-xs ${
+                  charCountTitle < 5
+                    ? 'text-muted-foreground'
+                    : 'text-orange-500'
+                }`}
+              >
                 {charCountTitle}/300
               </span>
             </div>
@@ -81,11 +93,17 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
               maxLength={300}
             />
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="post-content">Content</Label>
-              <span className={`text-xs ${charCountContent < 10 ? 'text-muted-foreground' : 'text-orange-500'}`}>
+              <span
+                className={`text-xs ${
+                  charCountContent < 10
+                    ? 'text-muted-foreground'
+                    : 'text-orange-500'
+                }`}
+              >
                 {charCountContent}/10000
               </span>
             </div>
@@ -102,7 +120,7 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
           </div>
 
           {error && (
-            <div 
+            <div
               className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-md"
               data-testid="create-post-error"
               role="alert"
@@ -125,7 +143,9 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
             )}
             <Button
               type="submit"
-              className={`bg-orange-500 hover:bg-orange-600 text-white ${onCancel ? 'flex-1' : 'w-full'}`}
+              className={`bg-orange-500 hover:bg-orange-600 text-white ${
+                onCancel ? 'flex-1' : 'w-full'
+              }`}
               disabled={isLoading}
               data-testid="create-post-submit"
             >
@@ -137,4 +157,3 @@ export function CreatePostForm({ onSuccess, onCancel }: CreatePostFormProps) {
     </Card>
   );
 }
-

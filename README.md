@@ -69,6 +69,26 @@ bun run dev
 
 The server will start at **http://localhost:3000**
 
+### Building for Production
+
+```bash
+bun run build
+```
+
+This outputs static files to the `dist` directory.
+
+## Deployment
+
+### GitHub Pages
+
+This project is configured to auto-deploy to GitHub Pages on push to `main` branch.
+
+1. Go to your repository **Settings** → **Pages**
+2. Under **Build and deployment**, select **GitHub Actions** as the source
+3. Push to `main` branch - the workflow will build and deploy automatically
+
+> **Note**: On GitHub Pages, only the frontend is available (all state is client-side). The API endpoints require running the dev server locally.
+
 ### Demo Credentials
 
 ```
@@ -331,4 +351,6 @@ Here are some suggested test scenarios to practice:
 
 - All data is stored in memory and **resets on page reload**
 - There are simulated network delays (300-500ms) for realistic async testing
-- The frontend and backend share the same port (3000)
+- The frontend and backend share the same port (3000) when running locally
+- On GitHub Pages, only the frontend works (API endpoints require local server)
+- Perfect for Selenium, Playwright, Cypress, or any other testing framework
