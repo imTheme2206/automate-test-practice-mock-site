@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Info, Code, TestTube2, Github } from 'lucide-react';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Code, Github, Info, TestTube2 } from "lucide-react";
 
 export function Sidebar() {
   return (
@@ -9,12 +9,13 @@ export function Sidebar() {
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Info className="h-4 w-4 text-orange-500" />
-            About MockReddit
+            About LoveNamphetZa
           </div>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
           <p className="mb-2">
-            A mock Reddit-style application designed for practicing automated testing.
+            A mock Reddit-style application designed for practicing automated
+            testing.
           </p>
           <p className="text-xs">
             All data is stored in memory and resets on page reload.
@@ -33,7 +34,11 @@ export function Sidebar() {
         <CardContent className="text-sm text-muted-foreground space-y-2">
           <div className="flex items-start gap-2">
             <span className="text-orange-500 font-bold">1.</span>
-            <p>Use <code className="text-xs bg-muted px-1 rounded">data-testid</code> attributes for reliable element selection</p>
+            <p>
+              Use{" "}
+              <code className="text-xs bg-muted px-1 rounded">data-testid</code>{" "}
+              attributes for reliable element selection
+            </p>
           </div>
           <div className="flex items-start gap-2">
             <span className="text-orange-500 font-bold">2.</span>
@@ -98,5 +103,3 @@ export function Sidebar() {
     </aside>
   );
 }
-
-

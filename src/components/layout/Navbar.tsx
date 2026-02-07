@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { store, type User } from '@/store';
-import { LogOut, Plus, Flame, User as UserIcon } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { store, type User } from "@/store";
+import { Flame, LogOut, Plus, User as UserIcon } from "lucide-react";
 
 interface NavbarProps {
   currentUser: User | null;
@@ -11,20 +11,23 @@ interface NavbarProps {
   onProfileClick?: () => void;
 }
 
-export function Navbar({ 
-  currentUser, 
-  onLoginClick, 
-  onRegisterClick, 
-  onCreatePostClick, 
+export function Navbar({
+  currentUser,
+  onLoginClick,
+  onRegisterClick,
+  onCreatePostClick,
   onLogoClick,
-  onProfileClick 
+  onProfileClick,
 }: NavbarProps) {
   const handleLogout = () => {
     store.logout();
   };
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-border/50 bg-card/80 backdrop-blur-lg" data-testid="navbar">
+    <nav
+      className="sticky top-0 z-40 w-full border-b border-border/50 bg-card/80 backdrop-blur-lg"
+      data-testid="navbar"
+    >
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <button
@@ -33,7 +36,7 @@ export function Navbar({
           data-testid="navbar-logo"
         >
           <Flame className="h-7 w-7 text-orange-500" />
-          <span className="hidden sm:inline">MockReddit</span>
+          <span className="hidden sm:inline">LoveNamphetZa</span>
         </button>
 
         {/* Actions */}
@@ -59,13 +62,16 @@ export function Navbar({
                 className="flex items-center gap-2"
                 data-testid="user-profile-btn"
               >
-                <div 
+                <div
                   className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
                   style={{ backgroundColor: currentUser.avatar }}
                 >
                   {currentUser.username[0].toUpperCase()}
                 </div>
-                <span className="hidden md:inline text-sm font-medium" data-testid="current-username">
+                <span
+                  className="hidden md:inline text-sm font-medium"
+                  data-testid="current-username"
+                >
                   {currentUser.username}
                 </span>
               </Button>
@@ -106,5 +112,3 @@ export function Navbar({
     </nav>
   );
 }
-
-

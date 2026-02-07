@@ -1,4 +1,4 @@
-# MockReddit
+# LoveNamphetZa
 
 A 100% vibe-coded project for my girlfriend to practice her automate test lesson.
 

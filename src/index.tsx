@@ -43,34 +43,35 @@ const apiStore = {
 // Initialize with demo data
 function initializeStore() {
   const demoUser1: User = {
-    id: 'user-1',
-    username: 'demo_user',
-    email: 'demo@example.com',
-    password: 'password123',
+    id: "user-1",
+    username: "demo_user",
+    email: "demo@example.com",
+    password: "password123",
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    avatar: '#4ECDC4'
+    avatar: "#4ECDC4",
   };
 
   const demoUser2: User = {
-    id: 'user-2',
-    username: 'test_automation',
-    email: 'test@example.com',
-    password: 'test123',
+    id: "user-2",
+    username: "test_automation",
+    email: "test@example.com",
+    password: "test123",
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    avatar: '#FF6B6B'
+    avatar: "#FF6B6B",
   };
 
   apiStore.users.set(demoUser1.id, demoUser1);
   apiStore.users.set(demoUser2.id, demoUser2);
 
   const demoPost1: Post = {
-    id: 'post-1',
-    title: 'Welcome to MockReddit - A Testing Practice Site',
-    content: 'This is a mock Reddit clone designed for practicing automated testing.',
-    authorId: 'user-1',
+    id: "post-1",
+    title: "Welcome to LoveNamphetZa - A Testing Practice Site",
+    content:
+      "This is a mock Reddit clone designed for practicing automated testing.",
+    authorId: "user-1",
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     upvotes: 42,
-    downvotes: 3
+    downvotes: 3,
   };
 
   apiStore.posts.set(demoPost1.id, demoPost1);
@@ -80,13 +81,13 @@ initializeStore();
 
 // Helper to get user from auth header
 function getUserFromAuth(req: Request): User | null {
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+
   const token = authHeader.slice(7);
   const userId = apiStore.sessions.get(token);
   if (!userId) return null;
-  
+
   return apiStore.users.get(userId) || null;
 }
 
@@ -94,7 +95,7 @@ function getUserFromAuth(req: Request): User | null {
 function jsonResponse(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { "Content-Type": "application/json" },
   });
 }
 
@@ -112,33 +113,48 @@ const server = serve({
 
           // Validation
           if (!username || username.length < 3) {
-            return jsonResponse({ error: 'Username must be at least 3 characters' }, 400);
+            return jsonResponse(
+              { error: "Username must be at least 3 characters" },
+              400,
+            );
           }
-          if (!email || !email.includes('@')) {
-            return jsonResponse({ error: 'Please enter a valid email address' }, 400);
+          if (!email || !email.includes("@")) {
+            return jsonResponse(
+              { error: "Please enter a valid email address" },
+              400,
+            );
           }
           if (!password || password.length < 6) {
-            return jsonResponse({ error: 'Password must be at least 6 characters' }, 400);
+            return jsonResponse(
+              { error: "Password must be at least 6 characters" },
+              400,
+            );
           }
 
           // Check if username/email exists
           for (const user of apiStore.users.values()) {
             if (user.username.toLowerCase() === username.toLowerCase()) {
-              return jsonResponse({ error: 'Username already taken' }, 400);
+              return jsonResponse({ error: "Username already taken" }, 400);
             }
             if (user.email.toLowerCase() === email.toLowerCase()) {
-              return jsonResponse({ error: 'Email already registered' }, 400);
+              return jsonResponse({ error: "Email already registered" }, 400);
             }
           }
 
-          const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+          const colors = [
+            "#FF6B6B",
+            "#4ECDC4",
+            "#45B7D1",
+            "#96CEB4",
+            "#FFEAA7",
+          ];
           const user: User = {
             id: `user-${Date.now()}`,
             username,
             email,
             password,
             createdAt: new Date().toISOString(),
-            avatar: colors[Math.floor(Math.random() * colors.length)]
+            avatar: colors[Math.floor(Math.random() * colors.length)],
           };
 
           apiStore.users.set(user.id, user);
@@ -146,14 +162,22 @@ const server = serve({
           const token = `token-${user.id}-${Date.now()}`;
           apiStore.sessions.set(token, user.id);
 
-          return jsonResponse({
-            user: { id: user.id, username: user.username, email: user.email, avatar: user.avatar },
-            token
-          }, 201);
+          return jsonResponse(
+            {
+              user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+              },
+              token,
+            },
+            201,
+          );
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     "/api/auth/login": {
@@ -163,57 +187,72 @@ const server = serve({
           const { username, password } = body;
 
           for (const user of apiStore.users.values()) {
-            if (user.username.toLowerCase() === username.toLowerCase() && user.password === password) {
+            if (
+              user.username.toLowerCase() === username.toLowerCase() &&
+              user.password === password
+            ) {
               const token = `token-${user.id}-${Date.now()}`;
               apiStore.sessions.set(token, user.id);
 
               return jsonResponse({
-                user: { id: user.id, username: user.username, email: user.email, avatar: user.avatar },
-                token
+                user: {
+                  id: user.id,
+                  username: user.username,
+                  email: user.email,
+                  avatar: user.avatar,
+                },
+                token,
               });
             }
           }
 
-          return jsonResponse({ error: 'Invalid username or password' }, 401);
+          return jsonResponse({ error: "Invalid username or password" }, 401);
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     "/api/auth/logout": {
       async POST(req) {
-        const authHeader = req.headers.get('Authorization');
-        if (authHeader?.startsWith('Bearer ')) {
+        const authHeader = req.headers.get("Authorization");
+        if (authHeader?.startsWith("Bearer ")) {
           apiStore.sessions.delete(authHeader.slice(7));
         }
         return jsonResponse({ success: true });
-      }
+      },
     },
 
     "/api/auth/me": {
       async GET(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse({
-          user: { id: user.id, username: user.username, email: user.email, avatar: user.avatar }
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            avatar: user.avatar,
+          },
         });
-      }
+      },
     },
 
     // Posts endpoints
     "/api/posts": {
       async GET() {
-        const posts = Array.from(apiStore.posts.values())
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        const posts = Array.from(apiStore.posts.values()).sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
         return jsonResponse({ posts });
       },
       async POST(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         try {
@@ -221,10 +260,16 @@ const server = serve({
           const { title, content } = body;
 
           if (!title || title.length < 5) {
-            return jsonResponse({ error: 'Title must be at least 5 characters' }, 400);
+            return jsonResponse(
+              { error: "Title must be at least 5 characters" },
+              400,
+            );
           }
           if (!content || content.length < 10) {
-            return jsonResponse({ error: 'Content must be at least 10 characters' }, 400);
+            return jsonResponse(
+              { error: "Content must be at least 10 characters" },
+              400,
+            );
           }
 
           const post: Post = {
@@ -234,38 +279,38 @@ const server = serve({
             authorId: user.id,
             createdAt: new Date().toISOString(),
             upvotes: 0,
-            downvotes: 0
+            downvotes: 0,
           };
 
           apiStore.posts.set(post.id, post);
 
           return jsonResponse({ post }, 201);
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     "/api/posts/:id": {
       async GET(req) {
         const post = apiStore.posts.get(req.params.id);
         if (!post) {
-          return jsonResponse({ error: 'Post not found' }, 404);
+          return jsonResponse({ error: "Post not found" }, 404);
         }
         return jsonResponse({ post });
       },
       async DELETE(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         const post = apiStore.posts.get(req.params.id);
         if (!post) {
-          return jsonResponse({ error: 'Post not found' }, 404);
+          return jsonResponse({ error: "Post not found" }, 404);
         }
         if (post.authorId !== user.id) {
-          return jsonResponse({ error: 'Forbidden' }, 403);
+          return jsonResponse({ error: "Forbidden" }, 403);
         }
 
         // Delete associated comments
@@ -277,54 +322,57 @@ const server = serve({
 
         apiStore.posts.delete(req.params.id);
         return jsonResponse({ success: true });
-      }
+      },
     },
 
     "/api/posts/:id/vote": {
       async POST(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         const post = apiStore.posts.get(req.params.id);
         if (!post) {
-          return jsonResponse({ error: 'Post not found' }, 404);
+          return jsonResponse({ error: "Post not found" }, 404);
         }
 
         try {
           const body = await req.json();
           const { voteType } = body;
 
-          if (voteType === 'up') {
+          if (voteType === "up") {
             post.upvotes++;
-          } else if (voteType === 'down') {
+          } else if (voteType === "down") {
             post.downvotes++;
           }
 
           return jsonResponse({ post });
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     "/api/posts/:id/comments": {
       async GET(req) {
         const comments = Array.from(apiStore.comments.values())
-          .filter(c => c.postId === req.params.id)
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          .filter((c) => c.postId === req.params.id)
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          );
         return jsonResponse({ comments });
       },
       async POST(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         const post = apiStore.posts.get(req.params.id);
         if (!post) {
-          return jsonResponse({ error: 'Post not found' }, 404);
+          return jsonResponse({ error: "Post not found" }, 404);
         }
 
         try {
@@ -332,7 +380,10 @@ const server = serve({
           const { content, parentId } = body;
 
           if (!content || content.length < 2) {
-            return jsonResponse({ error: 'Comment must be at least 2 characters' }, 400);
+            return jsonResponse(
+              { error: "Comment must be at least 2 characters" },
+              400,
+            );
           }
 
           const comment: Comment = {
@@ -343,16 +394,16 @@ const server = serve({
             parentId: parentId || null,
             createdAt: new Date().toISOString(),
             upvotes: 0,
-            downvotes: 0
+            downvotes: 0,
           };
 
           apiStore.comments.set(comment.id, comment);
 
           return jsonResponse({ comment }, 201);
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     // Comments endpoints
@@ -360,49 +411,49 @@ const server = serve({
       async DELETE(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         const comment = apiStore.comments.get(req.params.id);
         if (!comment) {
-          return jsonResponse({ error: 'Comment not found' }, 404);
+          return jsonResponse({ error: "Comment not found" }, 404);
         }
         if (comment.authorId !== user.id) {
-          return jsonResponse({ error: 'Forbidden' }, 403);
+          return jsonResponse({ error: "Forbidden" }, 403);
         }
 
         apiStore.comments.delete(req.params.id);
         return jsonResponse({ success: true });
-      }
+      },
     },
 
     "/api/comments/:id/vote": {
       async POST(req) {
         const user = getUserFromAuth(req);
         if (!user) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
 
         const comment = apiStore.comments.get(req.params.id);
         if (!comment) {
-          return jsonResponse({ error: 'Comment not found' }, 404);
+          return jsonResponse({ error: "Comment not found" }, 404);
         }
 
         try {
           const body = await req.json();
           const { voteType } = body;
 
-          if (voteType === 'up') {
+          if (voteType === "up") {
             comment.upvotes++;
-          } else if (voteType === 'down') {
+          } else if (voteType === "down") {
             comment.downvotes++;
           }
 
           return jsonResponse({ comment });
         } catch {
-          return jsonResponse({ error: 'Invalid request' }, 400);
+          return jsonResponse({ error: "Invalid request" }, 400);
         }
-      }
+      },
     },
 
     // Users endpoints
@@ -410,34 +461,42 @@ const server = serve({
       async GET(req) {
         const user = apiStore.users.get(req.params.id);
         if (!user) {
-          return jsonResponse({ error: 'User not found' }, 404);
+          return jsonResponse({ error: "User not found" }, 404);
         }
         return jsonResponse({
-          user: { id: user.id, username: user.username, avatar: user.avatar, createdAt: user.createdAt }
+          user: {
+            id: user.id,
+            username: user.username,
+            avatar: user.avatar,
+            createdAt: user.createdAt,
+          },
         });
-      }
+      },
     },
 
     "/api/users/:id/posts": {
       async GET(req) {
         const posts = Array.from(apiStore.posts.values())
-          .filter(p => p.authorId === req.params.id)
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          .filter((p) => p.authorId === req.params.id)
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          );
         return jsonResponse({ posts });
-      }
+      },
     },
 
     // Health check
     "/api/health": {
       GET() {
-        return jsonResponse({ 
-          status: 'ok', 
+        return jsonResponse({
+          status: "ok",
           timestamp: new Date().toISOString(),
           userCount: apiStore.users.size,
           postCount: apiStore.posts.size,
-          commentCount: apiStore.comments.size
+          commentCount: apiStore.comments.size,
         });
-      }
+      },
     },
 
     // Reset endpoint for testing
@@ -448,9 +507,12 @@ const server = serve({
         apiStore.comments.clear();
         apiStore.sessions.clear();
         initializeStore();
-        return jsonResponse({ success: true, message: 'Store reset to initial state' });
-      }
-    }
+        return jsonResponse({
+          success: true,
+          message: "Store reset to initial state",
+        });
+      },
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
@@ -459,4 +521,4 @@ const server = serve({
   },
 });
 
-console.log(`🔥 MockReddit server running at ${server.url}`);
+console.log(`🔥 LoveNamphetZa server running at ${server.url}`);

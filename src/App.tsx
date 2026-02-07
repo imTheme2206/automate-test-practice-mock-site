@@ -1,22 +1,26 @@
-import { useState, useEffect } from 'react';
-import { Navbar } from '@/components/layout/Navbar';
-import { AuthModal } from '@/components/auth/AuthModal';
-import { HomePage } from '@/pages/HomePage';
-import { PostPage } from '@/pages/PostPage';
-import { ProfilePage } from '@/pages/ProfilePage';
-import { store, type User } from '@/store';
-import './index.css';
+import { AuthModal } from "@/components/auth/AuthModal";
+import { Navbar } from "@/components/layout/Navbar";
+import { HomePage } from "@/pages/HomePage";
+import { PostPage } from "@/pages/PostPage";
+import { ProfilePage } from "@/pages/ProfilePage";
+import { store, type User } from "@/store";
+import { useEffect, useState } from "react";
+import "./index.css";
 
-type Page = 
-  | { type: 'home' }
-  | { type: 'post'; postId: string }
-  | { type: 'profile'; userId: string };
+type Page =
+  | { type: "home" }
+  | { type: "post"; postId: string }
+  | { type: "profile"; userId: string };
 
 export function App() {
-  const [currentUser, setCurrentUser] = useState<User | null>(store.auth.currentUser);
-  const [page, setPage] = useState<Page>({ type: 'home' });
+  const [currentUser, setCurrentUser] = useState<User | null>(
+    store.auth.currentUser,
+  );
+  const [page, setPage] = useState<Page>({ type: "home" });
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">(
+    "login",
+  );
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   useEffect(() => {
@@ -27,12 +31,12 @@ export function App() {
   }, []);
 
   const handleLoginClick = () => {
-    setAuthModalMode('login');
+    setAuthModalMode("login");
     setShowAuthModal(true);
   };
 
   const handleRegisterClick = () => {
-    setAuthModalMode('register');
+    setAuthModalMode("register");
     setShowAuthModal(true);
   };
 
@@ -45,23 +49,23 @@ export function App() {
   };
 
   const handlePostClick = (postId: string) => {
-    setPage({ type: 'post', postId });
+    setPage({ type: "post", postId });
   };
 
   const handleProfileClick = () => {
     if (currentUser) {
-      setPage({ type: 'profile', userId: currentUser.id });
+      setPage({ type: "profile", userId: currentUser.id });
     }
   };
 
   const handleGoHome = () => {
-    setPage({ type: 'home' });
+    setPage({ type: "home" });
     setShowCreatePost(false);
   };
 
   const handleCreatePostSuccess = (postId: string) => {
     setShowCreatePost(false);
-    setPage({ type: 'post', postId });
+    setPage({ type: "post", postId });
   };
 
   return (
@@ -76,7 +80,7 @@ export function App() {
       />
 
       <main>
-        {page.type === 'home' && (
+        {page.type === "home" && (
           <HomePage
             currentUser={currentUser}
             onPostClick={handlePostClick}
@@ -86,7 +90,7 @@ export function App() {
           />
         )}
 
-        {page.type === 'post' && (
+        {page.type === "post" && (
           <PostPage
             postId={page.postId}
             currentUser={currentUser}
@@ -95,7 +99,7 @@ export function App() {
           />
         )}
 
-        {page.type === 'profile' && (
+        {page.type === "profile" && (
           <ProfilePage
             userId={page.userId}
             currentUser={currentUser}
@@ -113,7 +117,7 @@ export function App() {
 
       {/* Footer */}
       <footer className="border-t border-border/50 mt-12 py-6 text-center text-sm text-muted-foreground">
-        <p>MockReddit - A testing practice site</p>
+        <p>LoveNamphetZa - A testing practice site</p>
         <p className="text-xs mt-1">
           All data resets on page reload • Built for automation testing practice
         </p>
